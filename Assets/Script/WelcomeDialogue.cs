@@ -7,6 +7,8 @@ public class WelcomeDialogue : MonoBehaviour
     public GameObject welcomePanel;
     public QuestionManager questionManager;
 
+    private bool hasTriggered = false;
+
     private void Awake()
     {
         if (welcomePanel != null)
@@ -17,6 +19,12 @@ public class WelcomeDialogue : MonoBehaviour
     {
         if (!collision.CompareTag("Player"))
             return;
+
+        // Prevent the dialogue from opening again
+        if (hasTriggered)
+            return;
+
+        hasTriggered = true;
 
         if (welcomePanel != null)
             welcomePanel.SetActive(true);

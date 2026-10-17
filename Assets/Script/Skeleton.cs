@@ -3,66 +3,233 @@ using UnityEngine;
 
 public class Skeleton : MonoBehaviour
 {
-    public float moveSpeed = 0.5f;
+    [Header("Enemy Settings")]
+    public float moveSpeed = 2f;
     public float health = 100f;
     public float damage = 10f;
 
-    private int direction = -1;
+    [Header("Chasing Settings")]
+    public LayerMask obstacleLayer;
+    public float obstacleCheckDistance = 0.6f;
+
+    [Header("Obstacle Debug")]
+    public bool showObstacleLogs = true;
+
     private Rigidbody2D rb;
     private Animator anim;
+    private Collider2D skeletonCollider;
 
-    private bool isAttacking = false;
-    private bool isDead = false;
+    private ContactFilter2D obstacleFilter;
+    private readonly RaycastHit2D[] castResults =
+        new RaycastHit2D[8];
+
+    private bool isAttacking;
+    private bool isDead;
+
+    private Transform targetPlayer;
 
     private LanceMovement player;
     private PlayerMovement2 player1;
+    private PlayerMovementArcher player3;
+
+    private Vector2 lastMoveDirection;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        skeletonCollider = GetComponent<Collider2D>();
+
+        obstacleFilter = new ContactFilter2D();
+        obstacleFilter.SetLayerMask(obstacleLayer);
+        obstacleFilter.useTriggers = false;
 
         if (rb == null)
             Debug.LogError("Skeleton: Rigidbody2D is missing!", this);
 
         if (anim == null)
             Debug.LogError("Skeleton: Animator is missing!", this);
+
+        if (skeletonCollider == null)
+            Debug.LogError(
+                "Skeleton: Add a Collider2D to the same GameObject!",
+                this);
+
+        FindPlayer();
     }
 
-    private void FixedUpdate()
+    void FindPlayer()
+    {
+        GameObject playerObject =
+            GameObject.FindGameObjectWithTag("Player");
+
+        if (playerObject != null)
+            targetPlayer = playerObject.transform;
+    }
+
+    void FixedUpdate()
     {
         if (isDead || rb == null)
             return;
 
-        if (isAttacking)
+        if (targetPlayer == null)
+            FindPlayer();
+
+        if (isAttacking || targetPlayer == null)
         {
-            rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
+            rb.linearVelocity = Vector2.zero;
+
+            if (anim != null)
+                anim.SetBool("IsRunning", false);
+               
+
+            return;
         }
-        else
+
+        Vector2 difference =
+            (Vector2)targetPlayer.position - rb.position;
+
+        if (difference.sqrMagnitude < 0.01f)
         {
-            rb.linearVelocity = new Vector2(
-                moveSpeed * direction,
-                rb.linearVelocity.y
-            );
+            rb.linearVelocity = Vector2.zero;
+
+            if (anim != null)
+                anim.SetBool("IsRunning", false);
+
+            return;
+        }
+
+        Vector2 direction = FindChaseDirection(difference);
+
+        if (direction == Vector2.zero)
+        {
+            rb.linearVelocity = Vector2.zero;
+
+            if (anim != null)
+                anim.SetBool("IsRunning", false);
+
+            return;
+        }
+
+        rb.linearVelocity = direction * moveSpeed;
+
+        if (anim != null)
+            anim.SetBool("IsRunning", true);
+
+        if (Mathf.Abs(direction.x) > 0.01f)
+        {
+            Vector3 scale = transform.localScale;
+            scale.x = Mathf.Abs(scale.x) * Mathf.Sign(direction.x);
+            transform.localScale = scale;
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    Vector2 FindChaseDirection(Vector2 difference)
     {
-        if (isDead)
-            return;
+        if (skeletonCollider == null)
+            return difference.normalized;
 
-        if (!collision.gameObject.CompareTag("Player"))
-            return;
+        Vector2 targetDirection = difference.normalized;
 
-        player = collision.gameObject.GetComponent<LanceMovement>();
-        player1 = collision.gameObject.GetComponent<PlayerMovement2>();
+        float x = Mathf.Sign(difference.x);
+        float y = Mathf.Sign(difference.y);
 
-        if (player != null || player1 != null)
-            Attack();
+        Vector2[] directions =
+        {
+            targetDirection,
+            new Vector2(x, 0f),
+            new Vector2(0f, y),
+            new Vector2(x, -y).normalized,
+            new Vector2(-x, y).normalized,
+            Vector2.up,
+            Vector2.down,
+            Vector2.left,
+            Vector2.right
+        };
+
+        Vector2 bestDirection = Vector2.zero;
+        float bestScore = float.NegativeInfinity;
+
+        foreach (Vector2 candidateDirection in directions)
+        {
+            if (candidateDirection.sqrMagnitude < 0.01f)
+                continue;
+
+            Vector2 candidate = candidateDirection.normalized;
+
+            int hitCount = skeletonCollider.Cast(
+                candidate,
+                obstacleFilter,
+                castResults,
+                obstacleCheckDistance
+            );
+
+            // Report the first obstacle detected.
+            if (hitCount > 0)
+            {
+                if (showObstacleLogs &&
+                    castResults[0].collider != null)
+                {
+                    Debug.Log(
+                        "Skeleton detected obstacle: " +
+                        castResults[0].collider.name +
+                        " | Direction: " + candidate,
+                        this
+                    );
+                }
+
+                continue;
+            }
+
+            float score = Vector2.Dot(
+                candidate,
+                targetDirection
+            );
+
+            // Prefer continuing in a similar direction.
+            if (lastMoveDirection != Vector2.zero &&
+                Vector2.Dot(candidate, lastMoveDirection) > 0.8f)
+            {
+                score += 0.15f;
+            }
+
+            if (score > bestScore)
+            {
+                bestScore = score;
+                bestDirection = candidate;
+            }
+        }
+
+        if (bestDirection != Vector2.zero)
+            lastMoveDirection = bestDirection;
+
+        return bestDirection;
     }
 
-    private void OnCollisionExit2D(Collision2D collision)
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (isDead ||
+            !collision.gameObject.CompareTag("Player"))
+            return;
+
+        targetPlayer = collision.transform;
+
+        player =
+            collision.gameObject.GetComponent<LanceMovement>();
+
+        player1 =
+            collision.gameObject.GetComponent<PlayerMovement2>();
+
+        player3 =
+            collision.gameObject.GetComponent<PlayerMovementArcher>();
+
+        if (player != null || player1 != null || player3 != null)
+        {
+            Attack();
+        }
+    }
+
+    void OnCollisionExit2D(Collision2D collision)
     {
         if (!collision.gameObject.CompareTag("Player"))
             return;
@@ -70,20 +237,28 @@ public class Skeleton : MonoBehaviour
         StopAttack();
         player = null;
         player1 = null;
+        player3 = null;
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Barrier"))
+        {
+            Destroy(collision.gameObject);
+        }
     }
 
     void Attack()
     {
-        if (isDead || anim == null)
+        if (isDead || anim == null || rb == null)
             return;
 
         isAttacking = true;
+        rb.linearVelocity = Vector2.zero;
 
         anim.SetBool("IsRunning", false);
         anim.SetBool("IsAttacking", true);
     }
 
-    // Call this using an Animation Event during the attack animation.
     public void DealDamage()
     {
         if (isDead)
@@ -93,6 +268,8 @@ public class Skeleton : MonoBehaviour
             player.TakeDamage(damage);
         else if (player1 != null)
             player1.TakeDamage(damage);
+        else if (player3 != null)
+            player3.TakeDamage(damage);
     }
 
     void StopAttack()
@@ -103,10 +280,7 @@ public class Skeleton : MonoBehaviour
         isAttacking = false;
 
         if (anim != null)
-        {
             anim.SetBool("IsAttacking", false);
-            anim.SetBool("IsRunning", true);
-        }
     }
 
     public void TakeDamage(float damageAmount)
@@ -115,6 +289,7 @@ public class Skeleton : MonoBehaviour
             return;
 
         health -= damageAmount;
+
         Debug.Log("Skeleton Health: " + health);
 
         if (health <= 0f)
@@ -126,7 +301,11 @@ public class Skeleton : MonoBehaviour
         isDead = true;
         isAttacking = false;
 
-        // Stop the skeleton immediately.
+        targetPlayer = null;
+        player = null;
+        player1 = null;
+        player3 = null;
+
         if (rb != null)
         {
             rb.linearVelocity = Vector2.zero;
@@ -134,25 +313,16 @@ public class Skeleton : MonoBehaviour
             rb.simulated = false;
         }
 
-        // Stop any further attack damage.
-        player = null;
-        player1 = null;
-
         if (anim != null)
         {
             anim.SetBool("IsRunning", false);
             anim.SetBool("IsAttacking", false);
-
-            // This must match the parameter in your Animator.
             anim.SetBool("IsDying", true);
         }
 
-        // Fallback in case the death animation does not destroy the object.
         Destroy(gameObject, 3f);
     }
 
-    // Optional: Add this as an Animation Event on the final frame
-    // of the death animation to destroy the skeleton at the exact time.
     public void FinishDeath()
     {
         Destroy(gameObject);

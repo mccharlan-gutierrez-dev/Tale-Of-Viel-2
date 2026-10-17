@@ -15,15 +15,9 @@ public class EnemySpawner : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // Detect Player 1 or Player 2
-        if (!other.CompareTag("Player") )
-            //&&
-            //!other.CompareTag("Player")
-        {
+        if (!other.CompareTag("Player"))
             return;
-        }
 
-        // Spawn only if there is no living spawned enemy
         if (spawnedEnemy != null)
             return;
 
@@ -32,10 +26,7 @@ public class EnemySpawner : MonoBehaviour
 
         if (enemyPrefab == null || spawnPoint == null)
         {
-            Debug.LogError(
-                "EnemySpawner: Assign the enemy prefab and spawn point!",
-                this
-            );
+            Debug.LogError("Assign enemy prefab and spawn point!", this);
             return;
         }
 

@@ -13,11 +13,14 @@ MonoBehaviour:
   m_Name: NPC
   m_EditorClassIdentifier: Assembly-CSharp::QtsData
   questions:
-  - questionText: HI
+  - questionText: Ah Youre Finally awake. this place isn't safe, you know. if you
+      want to survive, you'll have to learn how to take care of your self
     replies:
-    - HELLO
+    - Where am i
     correctReplyIndex: 0
-  - questionText: HOW ARE YOU
+  - questionText: Somewhere far from the safety you're used to. Don't worry. I'll
+      teach you what you need to know. After that, you'll have to survive on your
+      own
     replies:
-    - IM FINE
+    - '!'
     correctReplyIndex: 0

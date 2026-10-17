@@ -11,15 +11,16 @@ TagManager:
   - meat
   - Water
   - Barrier
+  - Obstacles
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Obstacles
   - Water
   - UI
-  - 
-  - 
+  - Player
+  - Enemy
   - 
   - 
   - 

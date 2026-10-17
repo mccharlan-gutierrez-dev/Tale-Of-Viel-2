@@ -152,7 +152,8 @@ public class PlayerMovement2 : MonoBehaviour
             gameOverPanel.SetActive(true);
         }
     }
+   
 
-    
+
 
 }
