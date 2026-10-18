@@ -24,3 +24,9 @@ MonoBehaviour:
     replies:
     - '!'
     correctReplyIndex: 0
+  - questionText: Somewhere far from the safety you're used to. Don't worry. I'll
+      teach you what you need to know. After that, you'll have to survive on your
+      own
+    replies:
+    - '!'
+    correctReplyIndex: 0
