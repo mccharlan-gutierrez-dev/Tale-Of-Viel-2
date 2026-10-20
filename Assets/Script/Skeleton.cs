@@ -15,11 +15,15 @@ public class Skeleton : MonoBehaviour
     [Header("Obstacle Debug")]
     public bool showObstacleLogs = true;
 
+    [Header("Death Settings")]
+    public float deathDestroyDelay = 3f;
+
     private Rigidbody2D rb;
     private Animator anim;
     private Collider2D skeletonCollider;
 
     private ContactFilter2D obstacleFilter;
+
     private readonly RaycastHit2D[] castResults =
         new RaycastHit2D[8];
 
@@ -51,9 +55,11 @@ public class Skeleton : MonoBehaviour
             Debug.LogError("Skeleton: Animator is missing!", this);
 
         if (skeletonCollider == null)
+        {
             Debug.LogError(
                 "Skeleton: Add a Collider2D to the same GameObject!",
                 this);
+        }
 
         FindPlayer();
     }
@@ -81,7 +87,6 @@ public class Skeleton : MonoBehaviour
 
             if (anim != null)
                 anim.SetBool("IsRunning", false);
-               
 
             return;
         }
@@ -164,7 +169,6 @@ public class Skeleton : MonoBehaviour
                 obstacleCheckDistance
             );
 
-            // Report the first obstacle detected.
             if (hitCount > 0)
             {
                 if (showObstacleLogs &&
@@ -186,7 +190,6 @@ public class Skeleton : MonoBehaviour
                 targetDirection
             );
 
-            // Prefer continuing in a similar direction.
             if (lastMoveDirection != Vector2.zero &&
                 Vector2.Dot(candidate, lastMoveDirection) > 0.8f)
             {
@@ -235,15 +238,24 @@ public class Skeleton : MonoBehaviour
             return;
 
         StopAttack();
+
         player = null;
         player1 = null;
         player3 = null;
     }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Barrier"))
+        Debug.Log("Skeleton trigger detected: " + collision.name);
+
+        if (isDead)
+            return;
+
+        if (collision.CompareTag("Barrier"))
         {
-            Destroy(collision.gameObject);
+            Debug.Log("Barrier detected! Destroying: " + collision.name);
+
+            Die();
         }
     }
 
@@ -293,11 +305,15 @@ public class Skeleton : MonoBehaviour
         Debug.Log("Skeleton Health: " + health);
 
         if (health <= 0f)
+        {
             Die();
+        }
     }
 
     void Die()
     {
+        if (isDead) return;
+
         isDead = true;
         isAttacking = false;
 
@@ -306,6 +322,7 @@ public class Skeleton : MonoBehaviour
         player1 = null;
         player3 = null;
 
+        // Stop the skeleton's movement
         if (rb != null)
         {
             rb.linearVelocity = Vector2.zero;
@@ -313,18 +330,25 @@ public class Skeleton : MonoBehaviour
             rb.simulated = false;
         }
 
+        // Play the death animation
         if (anim != null)
         {
             anim.SetBool("IsRunning", false);
             anim.SetBool("IsAttacking", false);
             anim.SetBool("IsDying", true);
+
+            anim.Update(0f);
         }
 
-        Destroy(gameObject, 3f);
-    }
+        Debug.Log("Skeleton death animation started.", this);
 
+        Destroy(gameObject, deathDestroyDelay);
+    }
     public void FinishDeath()
     {
+        if (!isDead)
+            return;
+
         Destroy(gameObject);
     }
 }

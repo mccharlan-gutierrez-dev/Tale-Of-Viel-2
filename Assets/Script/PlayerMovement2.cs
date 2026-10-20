@@ -23,6 +23,13 @@ public class PlayerMovement2 : MonoBehaviour
 
     public GameObject gameOverPanel;
 
+    //attackDamage health when attack villager
+    public float villagerDamageToPlayer = 10f;
+
+    //sound
+    public AudioClip attackSFX;
+    public AudioClip deathSFX;
+
 
     void Start()
     {
@@ -51,14 +58,14 @@ public class PlayerMovement2 : MonoBehaviour
         else
             anim.SetBool("IsRunning", false);
 
-        if (Input.GetMouseButtonDown(0))
-        {
-            Attack1();
-        }
+        //if (Input.GetMouseButtonDown(0))
+        //{
+        //    Attack1();
+        //}
 
         if (Input.GetMouseButtonDown(1))
         {
-            Attack2();
+            Attack1();
         }
 
         if (Input.GetKey(KeyCode.Space))
@@ -79,6 +86,9 @@ public class PlayerMovement2 : MonoBehaviour
 
     void Attack1()
     {
+        //sound
+        gameManager.instance.playSFX(attackSFX, 1, transform);
+
         anim.SetTrigger("Attack1");
         Attack();
     }
@@ -108,6 +118,14 @@ public class PlayerMovement2 : MonoBehaviour
                     skeleton.TakeDamage(attackDamage);
                     
                 }
+            }
+
+            if (enemy.CompareTag("Villager"))
+            {
+                // Player loses health when attacking a Villager
+                TakeDamage(villagerDamageToPlayer);
+
+                Debug.Log("Lance attacked a Villager! Player lost health.");
             }
         }
     }
@@ -148,6 +166,8 @@ public class PlayerMovement2 : MonoBehaviour
             anim.runtimeAnimatorController = deathController;
             anim.SetBool("IsRunning", false);
 
+            //sound
+            gameManager.instance.playSFX(deathSFX, 1, transform);
             Destroy(gameObject, 1f);
             gameOverPanel.SetActive(true);
         }

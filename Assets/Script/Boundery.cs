@@ -18,9 +18,7 @@ public class Boundery : MonoBehaviour
         if (gameOver)
             return;
 
-        if (other.CompareTag("Player") ||
-            other.CompareTag("Player1") ||
-            other.CompareTag("Player2"))
+        if (other.CompareTag("Player"))
         {
             gameOver = true;
 
@@ -58,4 +56,5 @@ public class Boundery : MonoBehaviour
             Debug.LogWarning("Game Over Panel is not assigned!");
         }
     }
+    
 }

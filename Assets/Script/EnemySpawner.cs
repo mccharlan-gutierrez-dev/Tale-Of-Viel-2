@@ -7,10 +7,6 @@ public class EnemySpawner : MonoBehaviour
     public GameObject enemyPrefab;
     public Transform spawnPoint;
 
-    [Header("Spawn Settings")]
-    public bool spawnOnlyOnce = false;
-
-    private GameObject spawnedEnemy;
     private bool hasSpawned = false;
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -18,10 +14,8 @@ public class EnemySpawner : MonoBehaviour
         if (!other.CompareTag("Player"))
             return;
 
-        if (spawnedEnemy != null)
-            return;
-
-        if (spawnOnlyOnce && hasSpawned)
+        // Stop spawning if an enemy was already spawned
+        if (hasSpawned)
             return;
 
         if (enemyPrefab == null || spawnPoint == null)
@@ -30,7 +24,8 @@ public class EnemySpawner : MonoBehaviour
             return;
         }
 
-        spawnedEnemy = Instantiate(
+        // Spawn the enemy only once
+        Instantiate(
             enemyPrefab,
             spawnPoint.position,
             spawnPoint.rotation
@@ -38,6 +33,6 @@ public class EnemySpawner : MonoBehaviour
 
         hasSpawned = true;
 
-        Debug.Log("Enemy spawned!");
+        Debug.Log("Enemy spawned once!");
     }
 }

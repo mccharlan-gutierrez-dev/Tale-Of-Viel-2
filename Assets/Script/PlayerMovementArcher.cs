@@ -27,6 +27,13 @@ public class PlayerMovementArcher : MonoBehaviour
     private bool isReadyToShoot = true;
     private bool isDead = false;
     private float facingDirection = 1f;
+    //public GameObject trivia;
+
+    
+
+    //sound
+    public AudioClip attackSFX;
+    public AudioClip deathSFX;
 
     void Start()
     {
@@ -155,6 +162,8 @@ public class PlayerMovementArcher : MonoBehaviour
             );
         }
 
+
+
         // Play attack animation
         Attack1();
 
@@ -175,6 +184,9 @@ public class PlayerMovementArcher : MonoBehaviour
     {
         if (anim != null)
         {
+            //sound
+            gameManager.instance.playSFX(attackSFX, 1, transform);
+
             anim.SetTrigger("Attack1");
         }
     }
@@ -211,6 +223,9 @@ public class PlayerMovementArcher : MonoBehaviour
         horizontal = 0f;
         vertical = 0f;
 
+        //sound
+        gameManager.instance.playSFX(deathSFX, 1, transform);
+
         if (rb != null)
         {
             rb.linearVelocity = Vector2.zero;
@@ -227,4 +242,21 @@ public class PlayerMovementArcher : MonoBehaviour
         // Remove the archer
         Destroy(gameObject);
     }
+
+    //private void OnTriggerEnter2D(Collider2D collision)
+    //{
+    //    if (collision.gameObject.CompareTag("Trivia"))
+    //    {
+    //        trivia.SetActive(true);
+    //    }
+    //}
+    //private void OnTriggerExit2D(Collider2D collision)
+    //{
+    //    if (collision.gameObject.CompareTag("Trivia"))
+    //    {
+    //        trivia.SetActive(false);
+    //    }
+    //}
+
+
 }

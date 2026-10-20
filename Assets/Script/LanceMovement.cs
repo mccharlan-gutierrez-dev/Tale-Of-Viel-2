@@ -23,6 +23,13 @@ public class LanceMovement : MonoBehaviour
 
     public GameObject gameOverPanel;
 
+    //attackDamage health when attack villager
+    public float villagerDamageToPlayer = 10f;
+
+    //sound
+    public AudioClip attackSFX;
+    public AudioClip deathSFX;
+
 
 
 
@@ -81,6 +88,10 @@ public class LanceMovement : MonoBehaviour
 
     void Attack1()
     {
+
+        //sound
+        gameManager.instance.playSFX(attackSFX, 1, transform);
+
         anim.SetTrigger("Attack1");
         Attack();
     }
@@ -111,6 +122,18 @@ public class LanceMovement : MonoBehaviour
 
                 }
             }
+
+            //attackDamage health when attack villager
+            if (enemy.CompareTag("Villager"))
+            {
+                // Player loses health when attacking a Villager
+                TakeDamage(villagerDamageToPlayer);
+
+                Debug.Log("Lance attacked a Villager! Player lost health.");
+            }
+
+
+
         }
     }
 
@@ -152,6 +175,9 @@ public class LanceMovement : MonoBehaviour
 
             anim.runtimeAnimatorController = deathController;
             anim.SetBool("IsRuinning", false);
+
+            //sound
+            gameManager.instance.playSFX(deathSFX, 1, transform);
 
             Destroy(gameObject, 1f);
             gameOverPanel.SetActive(true);
