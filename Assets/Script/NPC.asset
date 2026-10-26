@@ -28,7 +28,8 @@ MonoBehaviour:
     replies:
     - Okay
     correctReplyIndex: 0
-  - questionText: Use WASD to move your character and click the mouse to attack enemies
+  - questionText: Use WASD to move your character and click the right mouse to attack
+      enemies
     replies:
     - Okay got it
     correctReplyIndex: 0

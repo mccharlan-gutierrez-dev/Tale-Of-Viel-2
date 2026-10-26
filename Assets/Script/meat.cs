@@ -2,7 +2,9 @@ using UnityEngine;
 
 public class meat : MonoBehaviour
 {
-    
+    public GameObject collectedParticles;
+    public AudioClip collectSFX;
+
     void Start()
     {
         
@@ -18,7 +20,10 @@ public class meat : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
+            gameManager.instance.playSFX(collectSFX,1,transform);
+            GameObject p = Instantiate(collectedParticles, transform.position, Quaternion.identity);
             Destroy(gameObject);
+            Destroy(p, .60f);
             gameManager.instance.meatCollected += 1;
         }
     }

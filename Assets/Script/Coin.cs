@@ -2,7 +2,8 @@ using UnityEngine;
 
 public class Coin : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    public GameObject collectedParticles;
+    public AudioClip collectSFX;
     void Start()
     {
         
@@ -17,7 +18,10 @@ public class Coin : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
+            gameManager.instance.playSFX(collectSFX, 1, transform);
+            GameObject p = Instantiate(collectedParticles, transform.position, Quaternion.identity);
             Destroy(gameObject);
+            Destroy(p, .60f);
             gameManager.instance.coinCollected += 1;
         }
     }

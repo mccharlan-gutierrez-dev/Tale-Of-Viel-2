@@ -38,11 +38,21 @@ public class Skeleton : MonoBehaviour
 
     private Vector2 lastMoveDirection;
 
+    public AudioClip deathSFX;
+
+    //healthBehaviour
+
+    //public float Hitpoints;
+    //public float MaxHitpoints;
+    //public HealthbarBehaviour Healthbar;
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         skeletonCollider = GetComponent<Collider2D>();
+
+        //Hitpoints = MaxHitpoints;
+        //Healthbar.SetHealth(Hitpoints, MaxHitpoints);
 
         obstacleFilter = new ContactFilter2D();
         obstacleFilter.SetLayerMask(obstacleLayer);
@@ -297,10 +307,13 @@ public class Skeleton : MonoBehaviour
 
     public void TakeDamage(float damageAmount)
     {
+        
+
         if (isDead)
             return;
 
         health -= damageAmount;
+        //Healthbar.SetHealth(Hitpoints,MaxHitpoints)
 
         Debug.Log("Skeleton Health: " + health);
 
@@ -341,6 +354,9 @@ public class Skeleton : MonoBehaviour
         }
 
         Debug.Log("Skeleton death animation started.", this);
+
+        //sound
+        gameManager.instance.playSFX(deathSFX, 1, transform);
 
         Destroy(gameObject, deathDestroyDelay);
     }

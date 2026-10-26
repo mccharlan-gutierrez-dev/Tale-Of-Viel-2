@@ -15,6 +15,11 @@ public class Bullet : MonoBehaviour
     public void SetDirection(float newDirection)
     {
         direction = newDirection >= 0f ? 1f : -1f;
+
+        // Flip the arrow when shooting left
+        Vector3 scale = transform.localScale;
+        scale.x = Mathf.Abs(scale.x) * direction;
+        transform.localScale = scale;
     }
 
     void Start()
@@ -33,7 +38,6 @@ public class Bullet : MonoBehaviour
             0f
         );
 
-        // Destroy bullet if it doesn't hit anything
         Destroy(gameObject, lifetime);
     }
 
@@ -48,14 +52,16 @@ public class Bullet : MonoBehaviour
             Skeleton enemy =
                 collision.gameObject.GetComponent<Skeleton>();
 
-            // Damage the enemy
             if (enemy != null)
             {
                 enemy.TakeDamage(damage);
                 Debug.Log("Bullet hit enemy! Damage: " + damage);
             }
 
-            // Destroy bullet after hitting enemy
+            Destroy(gameObject);
+        }
+        if (collision.gameObject.CompareTag("Barrier"))
+        {
             Destroy(gameObject);
         }
     }

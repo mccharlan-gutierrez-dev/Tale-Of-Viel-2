@@ -12,6 +12,7 @@ public class MainMenu : MonoBehaviour
 
     public void Menu()
     {
+        Debug.Log("Main menu button click");
         SceneManager.LoadSceneAsync(0);
     }
     public void QuitGame()

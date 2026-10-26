@@ -18,10 +18,11 @@ public class LanceMovement : MonoBehaviour
     public float attackRange = 0.5f;
     public float attackDamage = 20f;
 
-    public RuntimeAnimatorController deathController;
+   
     bool isDead = false;
 
     public GameObject gameOverPanel;
+    public float gameOverDelay = .5f;
 
     //attackDamage health when attack villager
     public float villagerDamageToPlayer = 10f;
@@ -150,9 +151,22 @@ public class LanceMovement : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Water"))
+        if (collision.gameObject.CompareTag("Barrier"))
         {
-            Destroy(collision.gameObject);
+            isDead = true;
+            rb.linearVelocity = Vector2.zero;
+            anim.SetBool("IsDying", true);
+           
+
+            gameManager.instance.playSFX(deathSFX, 1, transform);
+            Destroy(gameObject, 2f);
+            gameOverPanel.SetActive(true);
+
+
+           
+            
+            
+
         }
     }
 
@@ -173,14 +187,30 @@ public class LanceMovement : MonoBehaviour
 
             rb.linearVelocity = Vector2.zero;
 
-            anim.runtimeAnimatorController = deathController;
+
+            anim.SetBool("IsDying", true);
             anim.SetBool("IsRuinning", false);
 
+            
+
+           
+            Invoke(nameof(ShowGameOver), gameOverDelay);
+
+            Destroy(gameObject, gameOverDelay);
             //sound
             gameManager.instance.playSFX(deathSFX, 1, transform);
-
-            Destroy(gameObject, 1f);
+        }
+    }
+    private void ShowGameOver()
+    {
+        if (gameOverPanel != null)
+        {
             gameOverPanel.SetActive(true);
+            
+        }
+        else
+        {
+            Debug.LogWarning("Game Over Panel is not assigned!");
         }
     }
 }

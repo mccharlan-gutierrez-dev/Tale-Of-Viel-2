@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class PlayerMovementArcher : MonoBehaviour
 {
     [Header("Movement Settings")]
-    public float moveSpeed = 5f;
+    public float moveSpeed;
 
     private float horizontal;
     private float vertical;
@@ -27,8 +27,8 @@ public class PlayerMovementArcher : MonoBehaviour
     private bool isReadyToShoot = true;
     private bool isDead = false;
     private float facingDirection = 1f;
-    //public GameObject trivia;
 
+    public float gameOverDelay = 2f;
     
 
     //sound
@@ -207,56 +207,52 @@ public class PlayerMovementArcher : MonoBehaviour
 
         if (health <= 0f)
         {
-            Die();
+            isDead = true;  
+            rb.linearVelocity = Vector2.zero;
+
+
+            CancelInvoke(nameof(ReloadGun));
+
+            anim.SetBool("IsDying", true);
+
+            
+            gameManager.instance.playSFX(deathSFX, 1, transform);
+         
+
+            Invoke(nameof(ShowGameOver), gameOverDelay);
+
+            Destroy(gameObject, gameOverDelay);
+
         }
     }
 
-    void Die()
+   
+
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (isDead) return;
-
-        isDead = true;
-
-        Debug.Log("Archer died!");
-
-        // Stop movement and shooting
-        horizontal = 0f;
-        vertical = 0f;
-
-        //sound
-        gameManager.instance.playSFX(deathSFX, 1, transform);
-
-        if (rb != null)
+        if (collision.gameObject.CompareTag("Barrier"))
         {
             rb.linearVelocity = Vector2.zero;
+
+            
+            gameManager.instance.playSFX(deathSFX,1, transform);
+            Destroy(gameObject);
+            gameOverPanel.SetActive(true) ;
         }
+    }
 
-        CancelInvoke(nameof(ReloadGun));
-
-        // Show game-over panel
+    private void ShowGameOver()
+    {
         if (gameOverPanel != null)
         {
             gameOverPanel.SetActive(true);
+
         }
-
-        // Remove the archer
-        Destroy(gameObject);
+        else
+        {
+            Debug.LogWarning("Game Over Panel is not assigned!");
+        }
     }
-
-    //private void OnTriggerEnter2D(Collider2D collision)
-    //{
-    //    if (collision.gameObject.CompareTag("Trivia"))
-    //    {
-    //        trivia.SetActive(true);
-    //    }
-    //}
-    //private void OnTriggerExit2D(Collider2D collision)
-    //{
-    //    if (collision.gameObject.CompareTag("Trivia"))
-    //    {
-    //        trivia.SetActive(false);
-    //    }
-    //}
 
 
 }
