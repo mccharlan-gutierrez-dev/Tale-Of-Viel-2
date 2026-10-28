@@ -27,6 +27,8 @@ public class QuestionManager : MonoBehaviour
     private bool isProcessingAnswer = false;
     private bool dialogueStarted = false;
 
+    public WelcomeDialogue welcomeDialogue;
+
     private void Awake()
     {
         // Hide the dialogue UI at the beginning.
@@ -305,6 +307,10 @@ public class QuestionManager : MonoBehaviour
             questionPanel.SetActive(false);
 
         dialogueStarted = false;
+
+        // Resume Player movement after all questions
+        if (welcomeDialogue != null)
+            welcomeDialogue.ResumePlayer();
 
         Debug.Log("Quiz Finished!");
     }

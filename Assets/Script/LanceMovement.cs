@@ -163,9 +163,12 @@ public class LanceMovement : MonoBehaviour
             gameOverPanel.SetActive(true);
 
 
-           
-            
-            
+            if (gameManager.instance != null)
+            {
+                gameManager.instance.ResetGame();
+            }
+
+
 
         }
     }
@@ -199,6 +202,11 @@ public class LanceMovement : MonoBehaviour
             Destroy(gameObject, gameOverDelay);
             //sound
             gameManager.instance.playSFX(deathSFX, 1, transform);
+
+            if (gameManager.instance != null)
+            {
+                gameManager.instance.ResetGame();
+            }
         }
     }
     private void ShowGameOver()

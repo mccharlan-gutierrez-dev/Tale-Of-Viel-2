@@ -157,7 +157,10 @@ public class PlayerMovement2 : MonoBehaviour
 
 
 
-
+            if (gameManager.instance != null)
+            {
+                gameManager.instance.ResetGame();
+            }
 
 
         }
@@ -194,6 +197,11 @@ public class PlayerMovement2 : MonoBehaviour
             Destroy(gameObject, gameOverDelay);
             //sound
             gameManager.instance.playSFX(deathSFX, 1, transform);
+
+            if (gameManager.instance != null)
+            {
+                gameManager.instance.ResetGame();
+            }
         }
     }
 

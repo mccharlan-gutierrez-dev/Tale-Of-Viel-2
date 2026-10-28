@@ -14,13 +14,8 @@ public class gameManager : MonoBehaviour
     public int coinCollected = 0;
     public int attkCollected = 0;
 
-    //sound
+    // Sound
     public GameObject SFXinstance;
-
-    //public AudioClip Attack;
-    //public AudioClip Death;
-    //public AudioClip deathSFX;
-    //public AudioClip collectSFX;
 
     private void Awake()
     {
@@ -31,7 +26,6 @@ public class gameManager : MonoBehaviour
         }
         else if (instance != this)
         {
-            // Use the UI references from the new scene
             instance.meatText = meatText;
             instance.coinText = coinText;
             instance.attkText = attkText;
@@ -40,15 +34,34 @@ public class gameManager : MonoBehaviour
         }
     }
 
+    public void ResetGame()
+    {
+        meatCollected = 0;
+        coinCollected = 0;
+        attkCollected = 0;
+
+        UpdateUI();
+
+        Debug.Log("Game Manager reset! All collected items are now 0.");
+    }
+
     public void playSFX(AudioClip clip, int volume, Transform t)
     {
-        AudioSource aud = Instantiate(SFXinstance, t.position, Quaternion.identity).GetComponent<AudioSource>();
+        AudioSource aud = Instantiate(
+            SFXinstance, t.position, Quaternion.identity
+        ).GetComponent<AudioSource>();
+
         aud.clip = clip;
         aud.volume = volume;
         aud.Play();
     }
 
-    void Update()
+    private void Update()
+    {
+        UpdateUI();
+    }
+
+    private void UpdateUI()
     {
         if (meatText != null)
             meatText.text = meatCollected.ToString();

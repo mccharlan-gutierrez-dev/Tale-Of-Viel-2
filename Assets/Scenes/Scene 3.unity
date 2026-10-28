@@ -1911,6 +1911,38 @@ Transform:
   m_Children: []
   m_Father: {fileID: 676609592}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &299446814 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7562355589998893464, guid: 6d09f54eacb3c02498c3de375f055238, type: 3}
+  m_PrefabInstance: {fileID: 5649223115251074886}
+  m_PrefabAsset: {fileID: 0}
+--- !u!50 &299446816
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 299446814}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &305008868
 GameObject:
   m_ObjectHideFlags: 0
@@ -6310,6 +6342,17 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.18019962, y: 0.1391499}
   m_EdgeRadius: 0
+--- !u!114 &1318983332 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8324260537153894524, guid: e53fb05b371160d4cb77b543f4cec663, type: 3}
+  m_PrefabInstance: {fileID: 5835292813330487453}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5dd925f2088827409174c3268a6c900, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WelcomeDialogue
 --- !u!1 &1338152176
 GameObject:
   m_ObjectHideFlags: 0
@@ -85012,7 +85055,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.124693155, y: 0.21548831}
+  m_Offset: {x: 0.72519636, y: 0.007128358}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -85022,7 +85065,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.7506137, y: 0.40644383}
+  m_Size: {x: 2.4503927, y: 0.82316375}
   m_EdgeRadius: 0
 --- !u!114 &728519821970629758
 MonoBehaviour:
@@ -85038,6 +85081,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WelcomeDialogue
   welcomePanel: {fileID: 7383850493478509737}
   questionManager: {fileID: 3335278052965331342}
+  playerManager: {fileID: 0}
 --- !u!224 &919200437623261497
 RectTransform:
   m_ObjectHideFlags: 0
@@ -85218,6 +85262,7 @@ MonoBehaviour:
   - {fileID: 8312895914442057022}
   qtsData: {fileID: 11400000, guid: 19f5bbcf1777ee5459ae81f9657875f1, type: 2}
   typingSpeed: 0.02
+  welcomeDialogue: {fileID: 0}
 --- !u!224 &3348062517565161535
 RectTransform:
   m_ObjectHideFlags: 0
@@ -85378,7 +85423,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Where am i
+  m_Text: Next
 --- !u!95 &5226401542525764865
 Animator:
   serializedVersion: 7
@@ -85556,7 +85601,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7562355589998893464, guid: 6d09f54eacb3c02498c3de375f055238, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 299446816}
   m_SourcePrefab: {fileID: 100100000, guid: 6d09f54eacb3c02498c3de375f055238, type: 3}
 --- !u!1001 &5835292813330487453
 PrefabInstance:
@@ -85622,6 +85670,14 @@ PrefabInstance:
       propertyPath: m_FontData.m_Font
       value: 
       objectReference: {fileID: 12800000, guid: c9f6d0e7bc8541498c9a4799ba184ede, type: 3}
+    - target: {fileID: 6327776854939299212, guid: e53fb05b371160d4cb77b543f4cec663, type: 3}
+      propertyPath: welcomeDialogue
+      value: 
+      objectReference: {fileID: 1318983332}
+    - target: {fileID: 8324260537153894524, guid: e53fb05b371160d4cb77b543f4cec663, type: 3}
+      propertyPath: playerManager
+      value: 
+      objectReference: {fileID: 299446814}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

@@ -217,7 +217,12 @@ public class PlayerMovementArcher : MonoBehaviour
 
             
             gameManager.instance.playSFX(deathSFX, 1, transform);
-         
+
+            if (gameManager.instance != null)
+            {
+                gameManager.instance.ResetGame();
+            }
+
 
             Invoke(nameof(ShowGameOver), gameOverDelay);
 
@@ -238,6 +243,11 @@ public class PlayerMovementArcher : MonoBehaviour
             gameManager.instance.playSFX(deathSFX,1, transform);
             Destroy(gameObject);
             gameOverPanel.SetActive(true) ;
+
+            if (gameManager.instance != null)
+            {
+                gameManager.instance.ResetGame();
+            }
         }
     }
 
