@@ -64,5 +64,24 @@ public class Bullet : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        // Hit Villager
+        else if (collision.gameObject.CompareTag("Villager"))
+        {
+            hasHit = true;
+
+            PlayerMovementArcher archer =
+                FindFirstObjectByType<PlayerMovementArcher>();
+
+            if (archer != null)
+            {
+                archer.TakeDamage(archer.villagerDamageToPlayer);
+
+                Debug.Log("Archer hit a Villager! Lost health.");
+            }
+
+            Destroy(gameObject);
+        }
+
     }
 }

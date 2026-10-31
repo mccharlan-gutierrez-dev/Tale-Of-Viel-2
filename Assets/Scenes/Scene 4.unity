@@ -35384,6 +35384,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 745925675}
     - target: {fileID: 3561634854736206598, guid: 42add9d93e4d7104caf4484cadfd4ff7, type: 3}
+      propertyPath: moveSpeed
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3561634854736206598, guid: 42add9d93e4d7104caf4484cadfd4ff7, type: 3}
       propertyPath: gameOverPanel
       value: 
       objectReference: {fileID: 1165066038}
@@ -35698,7 +35702,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7562355589998893464, guid: 6d09f54eacb3c02498c3de375f055238, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8185819978176396260, guid: 6d09f54eacb3c02498c3de375f055238, type: 3}
       propertyPath: m_LocalPosition.x

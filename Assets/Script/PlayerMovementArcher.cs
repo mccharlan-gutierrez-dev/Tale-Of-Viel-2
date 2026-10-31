@@ -29,7 +29,11 @@ public class PlayerMovementArcher : MonoBehaviour
     private float facingDirection = 1f;
 
     public float gameOverDelay = 2f;
-    
+
+    //hit villager
+    [Header("Villager Damage")]
+    public float villagerDamageToPlayer = 10f;
+
 
     //sound
     public AudioClip attackSFX;
